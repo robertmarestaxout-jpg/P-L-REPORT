@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Azapro Roofing LLC — Dashboard Profit &amp; Loss</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  :root{
+    --bg:#0b1220;--panel:#111a2e;--panel-2:#1a2540;--border:#1f2b49;
+    --text:#e6edf7;--muted:#8ea0c2;--accent:#22d3ee;
+    --good:#10b981;--bad:#ef4444;--warn:#f59e0b;--gold:#fbbf24;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;}
+  .container{max-width:1400px;margin:0 auto;padding:28px 24px 60px;}
+  header.top{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:1px solid var(--border);padding-bottom:18px;margin-bottom:24px;gap:16px;flex-wrap:wrap;}
+  header.top h1{margin:0;font-size:22px;letter-spacing:.3px}
+  header.top h1 .accent{color:var(--accent)}
+  header.top .sub{color:var(--muted);font-size:13px;margin-top:4px}
+  header.top .meta{text-align:right;color:var(--muted);font-size:12px;line-height:1.6}
+  header.top .meta strong{color:var(--text)}
+  .section-title{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:600;color:var(--text);margin:0 0 12px 2px;letter-spacing:.3px;text-transform:uppercase}
+  .section-title::before{content:"";width:3px;height:16px;background:var(--accent);border-radius:2px;display:inline-block}
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:26px}
+  .kpi{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:16px 18px;position:relative;overflow:hidden}
+  .kpi .label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px}
+  .kpi .value{font-size:24px;font-weight:700;letter-spacing:-.5px}
+  .kpi .delta{font-size:12px;margin-top:6px;color:var(--muted)}
+  .kpi .delta.up{color:var(--good)}
+  .kpi .delta.down{color:var(--bad)}
+  .kpi.revenue::after{content:"";position:absolute;right:-20px;top:-20px;width:90px;height:90px;background:radial-gradient(closest-side,rgba(34,211,238,.18),transparent);border-radius:50%}
+  .kpi.expenses::after{content:"";position:absolute;right:-20px;top:-20px;width:90px;height:90px;background:radial-gradient(closest-side,rgba(239,68,68,.18),transparent);border-radius:50%}
+  .kpi.net::after{content:"";position:absolute;right:-20px;top:-20px;width:90px;height:90px;background:radial-gradient(closest-side,rgba(16,185,129,.18),transparent);border-radius:50%}
+  .kpi.margin::after{content:"";position:absolute;right:-20px;top:-20px;width:90px;height:90px;background:radial-gradient(closest-side,rgba(251,191,36,.18),transparent);border-radius:50%}
+  .tabs{display:flex;gap:8px;background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:6px;margin-bottom:16px;width:fit-content}
+  .tab{background:transparent;border:none;color:var(--muted);padding:9px 18px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;letter-spacing:.3px}
+  .tab:hover{color:var(--text)}
+  .tab.active{background:var(--accent);color:#0b1220}
+  .card{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:18px 20px;margin-bottom:18px}
+  .card h3{margin:0 0 14px 0;font-size:14px;color:var(--text);font-weight:600;letter-spacing:.3px;text-transform:uppercase}
+  .card h3 .note{color:var(--muted);font-weight:400;font-size:11px;margin-left:8px;text-transform:none;letter-spacing:0}
+  .grid-2{display:grid;grid-template-columns:2fr 1fr;gap:18px;margin-bottom:18px}
+  canvas{max-width:100%}
+  .chart-wrap{position:relative;height:340px}
+  .chart-wrap-s{position:relative;height:260px}
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  table th,table td{padding:10px 12px;text-align:left}
+  table thead th{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.6px;font-weight:600;border-bottom:1px solid var(--border)}
+  table tbody tr{border-bottom:1px solid rgba(31,43,73,.5)}
+  table tbody tr:hover{background:rgba(34,211,238,.05)}
+  table td.num{text-align:right;font-variant-numeric:tabular-nums}
+  .rank{display:inline-flex;align-items:center;justify-content:center;width:30px;height:24px;border-radius:12px;background:#25304d;color:var(--muted);font-size:12px;font-weight:700}
+  .rank.gold{background:var(--gold);color:#0b1220}
+  .rank.silver{background:#94a3b8;color:#0b1220}
+  .rank.bronze{background:#d97706;color:#0b1220}
+  .bar-inline{display:inline-block;height:6px;border-radius:3px;background:#25304d;overflow:hidden;width:120px;vertical-align:middle;margin-left:8px}
+  .bar-inline span{display:block;height:100%;background:linear-gradient(90deg,var(--accent),#60a5fa)}
+  .note-small{color:var(--muted);font-size:11px;margin-top:6px;font-style:italic}
+  .alert{background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.3);border-radius:8px;padding:12px 16px;margin-bottom:18px;font-size:13px;color:#fcd34d}
+  .alert strong{color:#fbbf24}
+  footer{color:var(--muted);font-size:12px;text-align:center;margin-top:30px;padding-top:20px;border-top:1px solid var(--border)}
+  footer strong{color:var(--text)}
+  @media (max-width:900px){.kpis{grid-template-columns:repeat(2,1fr)}.grid-2{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header class="top">
+    <div>
+      <h1>Azapro Roofing LLC <span class="accent">— Profit &amp; Loss Dashboard</span></h1>
+      <div class="sub">Roofing Contractors · NAICS 238160</div>
+    </div>
+    <div class="meta">
+      <div>Preparado por <strong>Toro Taxes</strong></div>
+      <div>Corte: <strong>18 de abril, 2026</strong></div>
+      <div>Comparativo: <strong>YTD 2026 vs 2025</strong></div>
+    </div>
+  </header>
+
+  <div class="alert">
+    <strong>⚠️ Nota de bookkeeping:</strong> Se detectó el ajuste "Transfering funds from the primary account" como gasto negativo (-$42,000 YTD 2026, -$205,376 en 2025). Se recomienda recategorizar este movimiento como transferencia entre cuentas, no como gasto operativo, para evitar distorsión en el margen real.
+  </div>
+
+  <div class="kpis">
+    <div class="kpi revenue">
+      <div class="label">Ingresos YTD 2026</div>
+      <div class="value">$344,073.90</div>
+      <div class="delta">Año 2025 completo: $1,423,289.95</div>
+    </div>
+    <div class="kpi expenses">
+      <div class="label">Gastos YTD 2026</div>
+      <div class="value">$18,015.80</div>
+      <div class="delta">Año 2025 completo: $288,338.91</div>
+    </div>
+    <div class="kpi net">
+      <div class="label">Net Income YTD 2026</div>
+      <div class="value">$308,529.30</div>
+      <div class="delta up">Año 2025 completo: $1,117,355.33</div>
+    </div>
+    <div class="kpi margin">
+      <div class="label">Net Margin YTD 2026</div>
+      <div class="value">89.7%</div>
+      <div class="delta">Año anterior: 78.5%</div>
+    </div>
+  </div>
+
+  <div class="section-title">Tendencia de Ingresos vs Gastos</div>
+  <div class="tabs" id="tabs">
+    <button class="tab" data-view="daily">Día</button>
+    <button class="tab" data-view="weekly">Semana</button>
+    <button class="tab active" data-view="monthly">Mes</button>
+    <button class="tab" data-view="quarterly">Trimestre</button>
+  </div>
+
+  <div class="card">
+    <h3 id="mainChartTitle">Ingresos vs Gastos — Vista Mensual <span class="note">(2025 + YTD 2026)</span></h3>
+    <div class="chart-wrap"><canvas id="mainChart"></canvas></div>
+    <div class="note-small">Nota: la granularidad mensual proviene directo de QuickBooks. Las vistas Día y Semana distribuyen los totales mensuales proporcionalmente.</div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <h3>Net Income Mensual <span class="note">(verde = positivo / rojo = negativo)</span></h3>
+      <div class="chart-wrap-s"><canvas id="netChart"></canvas></div>
+    </div>
+    <div class="card">
+      <h3>Comparativo YoY <span class="note">(2025 full vs 2026 YTD)</span></h3>
+      <div class="chart-wrap-s"><canvas id="yoyChart"></canvas></div>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <h3>Ingresos por Cuenta <span class="note">(2025 completo)</span></h3>
+      <div class="chart-wrap-s"><canvas id="incomeBreakdown"></canvas></div>
+    </div>
+    <div class="card">
+      <h3>Top Gastos por Categoría <span class="note">(2025 completo)</span></h3>
+      <div class="chart-wrap-s"><canvas id="expenseBreakdown"></canvas></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Detalle Mensual <span class="note">(histórico 2025 + YTD 2026)</span></h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Periodo</th>
+          <th class="num">Ingresos</th>
+          <th class="num">COGS</th>
+          <th class="num">Gastos Op.</th>
+          <th class="num">Net Income</th>
+          <th class="num">Margen</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody"></tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <h3>Top Cuentas de Ingreso <span class="note">(ranked por aporte a revenue 2025)</span></h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Rank</th>
+          <th>Cuenta</th>
+          <th class="num">Total 2025</th>
+          <th>% del Total</th>
+        </tr>
+      </thead>
+      <tbody id="incomeRankBody"></tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <h3>Top Gastos 2025 <span class="note">(ranked por dólares)</span></h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Rank</th>
+          <th>Categoría</th>
+          <th class="num">Total 2025</th>
+          <th>% del Total</th>
+        </tr>
+      </thead>
+      <tbody id="expenseRankBody"></tbody>
+    </table>
+  </div>
+
+  <footer>
+    <strong>Toro Taxes Tax Advisory</strong> · Dashboard generado automáticamente desde QuickBooks · Actualización diaria programada
+  </footer>
+</div>
+
+<script>
+const DATA_2025 = {
+  months: [
+    {label:"Ene", income:70778.67,  cogs:0,      expenses:15038.21,  net:55740.46},
+    {label:"Feb", income:74485.00,  cogs:0,      expenses:25500.63,  net:48984.37},
+    {label:"Mar", income:105805.00, cogs:0,      expenses:34792.10,  net:71012.90},
+    {label:"Abr", income:202018.00, cogs:0,      expenses:18981.06,  net:183036.94},
+    {label:"May", income:71365.00,  cogs:1320,   expenses:37879.78,  net:32165.22},
+    {label:"Jun", income:261091.49, cogs:0,      expenses:100465.81, net:160625.68},
+    {label:"Jul", income:109672.70, cogs:602.47, expenses:47508.79,  net:61561.44},
+    {label:"Ago", income:199794.30, cogs:52.58,  expenses:12755.68,  net:186986.04},
+    {label:"Sep", income:101463.21, cogs:227.50, expenses:22037.60,  net:79198.11},
+    {label:"Oct", income:59455.28,  cogs:967.88, expenses:-1248.68,  net:59736.08},
+    {label:"Nov", income:97977.26,  cogs:87.38,  expenses:-4310.71,  net:102200.59},
+    {label:"Dic", income:71852.19,  cogs:0,      expenses:-2444.41,  net:74296.60},
+  ],
+  totals:{income:1423289.95, expenses:288338.91, net:1117355.33, cogs:9896.81, grossProfit:1413393.14},
+  incomeBreakdown: [
+    {name:"SumoQuote - Income", value:1249998.02},
+    {name:"Services", value:164200.08},
+    {name:"Azapro Roofing (JobNimbus)", value:11560.00},
+    {name:"Refund", value:408.00},
+    {name:"Discounts given", value:-2876.15},
+  ],
+  expenseBreakdown: [
+    {name:"Supplies & Materials", value:164376.95},
+    {name:"Contract labor", value:134749.88},
+    {name:"Payroll expenses", value:69569.90},
+    {name:"JobNimbus Expense", value:24085.10},
+    {name:"Utilities", value:24713.49},
+    {name:"Training", value:15731.11},
+    {name:"Advertising & marketing", value:15061.93},
+    {name:"General business expenses", value:14870.52},
+    {name:"Travel", value:9383.86},
+    {name:"Office/General Admin", value:5595.91},
+    {name:"QuickBooks Payment Fees", value:3682.22},
+    {name:"Commissions & fees", value:3000.00},
+    {name:"Office expenses", value:3001.20},
+    {name:"Meals", value:1958.47},
+    {name:"Equipment rental", value:1792.02},
+    {name:"Dues & subscriptions", value:661.00},
+    {name:"Insurance", value:676.00},
+    {name:"Transfers (to recategorize)", value:-205376.64},
+  ],
+};
+
+const DATA_2026 = {
+  months: [
+    {label:"Ene", income:104369.92, cogs:0,      expenses:267.60,    net:104102.32},
+    {label:"Feb", income:56328.12,  cogs:16000,  expenses:10378.02,  net:29950.10},
+    {label:"Mar", income:88504.66,  cogs:0,      expenses:-6938.93,  net:55990.59},
+    {label:"Abr (1-18)", income:95521.34, cogs:0, expenses:15354.49, net:80166.85},
+  ],
+  totals:{income:344073.90, expenses:18015.80, net:308529.30, cogs:16044.88, grossProfit:328029.02},
+};
+
+const fmt = (n)=> "$" + (n==null?0:n).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
+const fmtShort = (n)=>{
+  if(n==null) return "$0";
+  if(Math.abs(n)>=1000000) return "$"+(n/1000000).toFixed(2)+"M";
+  if(Math.abs(n)>=1000) return "$"+(n/1000).toFixed(1)+"k";
+  return "$"+n.toFixed(0);
+};
+const pct = (num,den)=> den===0?0:(num/den)*100;
+
+function buildMonthlySeries(){
+  const labels=[], income=[], expenses=[], net=[];
+  DATA_2025.months.forEach(m=>{
+    labels.push(m.label+" '25"); income.push(m.income);
+    expenses.push(m.expenses+m.cogs); net.push(m.net);
+  });
+  DATA_2026.months.forEach(m=>{
+    labels.push(m.label+" '26"); income.push(m.income);
+    expenses.push(m.expenses+m.cogs); net.push(m.net);
+  });
+  return {labels,income,expenses,net};
+}
+function buildQuarterlySeries(){
+  const quarters=[{label:"Q1 '25",m:[0,1,2]},{label:"Q2 '25",m:[3,4,5]},{label:"Q3 '25",m:[6,7,8]},{label:"Q4 '25",m:[9,10,11]}];
+  const labels=[], income=[], expenses=[], net=[];
+  quarters.forEach(q=>{
+    let i=0,e=0,n=0;
+    q.m.forEach(mi=>{const mm=DATA_2025.months[mi];i+=mm.income;e+=mm.expenses+mm.cogs;n+=mm.net});
+    labels.push(q.label); income.push(i); expenses.push(e); net.push(n);
+  });
+  let i2=0,e2=0,n2=0;
+  DATA_2026.months.forEach(m=>{i2+=m.income;e2+=m.expenses+m.cogs;n2+=m.net});
+  labels.push("Q1-Q2 '26 YTD"); income.push(i2); expenses.push(e2); net.push(n2);
+  return {labels,income,expenses,net};
+}
+function buildWeeklySeries(){
+  const labels=[], income=[], expenses=[], net=[];
+  DATA_2025.months.forEach(m=>{for(let w=1;w<=4;w++){
+    labels.push("Sem "+w+" "+m.label+" '25");
+    income.push(+(m.income/4).toFixed(2)); expenses.push(+((m.expenses+m.cogs)/4).toFixed(2)); net.push(+(m.net/4).toFixed(2));
+  }});
+  DATA_2026.months.forEach(m=>{for(let w=1;w<=4;w++){
+    labels.push("Sem "+w+" "+m.label+" '26");
+    income.push(+(m.income/4).toFixed(2)); expenses.push(+((m.expenses+m.cogs)/4).toFixed(2)); net.push(+(m.net/4).toFixed(2));
+  }});
+  return {labels,income,expenses,net};
+}
+function buildDailySeries(){
+  const labels=[], income=[], expenses=[], net=[];
+  const days={
+    "Nov '25":[DATA_2025.months[10],30],"Dic '25":[DATA_2025.months[11],31],
+    "Ene '26":[DATA_2026.months[0],31],"Feb '26":[DATA_2026.months[1],28],
+    "Mar '26":[DATA_2026.months[2],31],"Abr '26":[DATA_2026.months[3],18],
+  };
+  Object.entries(days).forEach(([k,[m,n]])=>{
+    const inc=m.income/n, exp=(m.expenses+m.cogs)/n, nt=m.net/n;
+    for(let d=1;d<=n;d++){labels.push(d+" "+j);income.push(+inc.toFixed(2));expenses.push(+exp.toFixed(2));net.push(+nt.toFixed(2))}
+  });
+  return {labels,income,expenses,net};
+}
+
+Chart.defaults.color="#8ea0c2";
+Chart.defaults.borderColor="#1f2b49";
+Chart.defaults.font.family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif";
+
+let mainChart;
+function renderMainChart(series, title){
+  if(mainChart) mainChart.destroy();
+  mainChart=new Chart(document.getElementById("mainChart"),{
+    type:"line",
+    data:{labels:series.labels,datasets:[
+      {label:"Ingresos",data:series.income,borderColor:"#22d3ee",backgroundColor:"rgba(34,211,238,.15)",fill:true,tension:.3,pointRadius:3,borderWidth:2},
+      {label:"Gastos (incl. COGS)",data:series.expenses,borderColor:"#ef4444",backgroundColor:"rgba(239,68,68,.12)",fill:true,tension:.3,pointRadius:3,borderWidth:2},
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{position:"top",labels:{usePointStyle:true,pointStyle:"circle"}},
+               tooltip:{callbacks:{label:(c)=>c.dataset.label+": "+fmt(c.parsed.y)}}},
+      scales:{y:{grid:{color:"#1f2b49"},ticks:{callback:(v)=>fmtShort(v)}},
+              x:{grid:{display:false},ticks:{maxRotation:55,autoSkip:true,autoSkipPadding:12}}}}
+  });
+  document.getElementById("mainChartTitle").innerHTML="Ingresos vs Gastos — "+title+' <span class="note">(2025 + YTD 2026)</span>';
+}
+
+function renderNetChart(){
+  const months=[...DATA_2025.months.map(m=>({label:m.label+" '25",net:m.net})),
+                ...DATA_2026.months.map(m=>({label:m.label+" '26",net:m.net}))];
+  new Chart(document.getElementById("netChart"),{
+    type:"bar",
+    data:{labels:months.map(m=>m.label),datasets:[{
+      data:months.map(m=>m.net),
+      backgroundColor:months.map(m=>m.net>=0?"rgba(16,185,129,.75)":"rgba(239,68,68,.75)"),
+      borderColor:months.map(m=>m.net>=0?"#10b981":"#ef4444"),borderWidth:1,borderRadius:4
+    }]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:(c)=>"Net: "+fmt(c.parsed.y)}}},
+      scales:{y:{grid:{color:"#1f2b49"},ticks:{callback:(v)=>fmtShort(v)}},x:{grid:{display:false}}}}
+  });
+}
+
+function renderYoYChart(){
+  new Chart(document.getElementById("yoyChart"),{
+    type:"bar",
+    data:{labels:["Ingresos","Gastos+COGS","Net Income"],datasets:[
+      {label:"2025 (full)",data:[DATA_2025.totals.income,DATA_2025.totals.expenses+DATA_2025.totals.cogs,DATA_2025.totals.net],
+       backgroundColor:"rgba(139,92,246,.7)",borderColor:"#8b5cf6",borderWidth:1,borderRadius:4},
+      {label:"2026 YTD",data:[DATA_2026.totals.income,DATA_2026.totals.expenses+DATA_2026.totals.cogs,DATA_2026.totals.net],
+       backgroundColor:"rgba(34,211,238,.7)",borderColor:"#22d3ee",borderWidth:1,borderRadius:4}
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{tooltip:{callbacks:{label:(c)=>c.dataset.label+": "+fmt(c.parsed.y)}}},
+      scales:{y:{grid:{color:"#1f2b49"},ticks:{callback:(v)=>fmtShort(v)}},x:{grid:{display:false}}}}
+  });
+}
+
+function renderIncomeBreakdown(){
+  const data=DATA_2025.incomeBreakdown.filter(d=>d.value>0);
+  new Chart(document.getElementById("incomeBreakdown"),{
+    type:"doughnut",
+    data:{labels:data.map(d=>d.name),
+          datasets:[{data:data.map(d=>d.value),
+          backgroundColor:["#22d3ee","#60a5fa","#a78bfa","#f472b6","#fbbf24"],
+          borderColor:"#0b1220",borderWidth:2}]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{position:"right",labels:{padding:10,usePointStyle:true,font:{size:11}}},
+               tooltip:{callbacks:{label:(c)=>c.label+": "+fmt(c.parsed)+" ("+pct(c.parsed,DATA_2025.totals.income).toFixed(1)+"%)"}}}}
+  });
+}
+
+function renderExpenseBreakdown(){
+  const data=DATA_2025.expenseBreakdown.filter(d=>d.value>0).slice(0,10);
+  new Chart(document.getElementById("expenseBreakdown"),{
+    type:"bar",
+    data:{labels:data.map(d=>d.name),
+          datasets:[{data:data.map(d=>d.value),
+          backgroundColor:["#ef4444","#f97316","#f59e0b","#fbbf24","#eab308","#84cc16","#22d3ee","#60a5fa","#a78bfa","#f472b6"],
+          borderRadius:4}]},
+    options:{indexAxis:"y",responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},
+               tooltip:{callbacks:{label:(c)=>fmt(c.parsed.x)+" ("+pct(c.parsed.x,DATA_2025.totals.expenses).toFixed(1)+"%)"}}},
+      scales:{x:{grid:{color:"#1f2b49"},ticks:{callback:(v)=>fmtShort(v)}},y:{grid:{display:false}}}}
+  });
+}
+
+function renderTable(){
+  const tbody=document.getElementById("tableBody");
+  const rows=[];
+  [...DATA_2025.months.map(m=>({...m,year:2025,label:m.label+" 2025"})),
+   ...DATA_2026.months.map(m=>({...m,year:2026,label:m.label+" 2026"}))
+  ].forEach(m=>{
+    const marg=m.income===0?0:(m.net/m.income)*100;
+    rows.push(`<tr>
+      <td>${m.label}</td>
+      <td class="num">${fmt(m.income)}</td>
+      <td class="num">${fmt(m.cogs)}</td>
+      <td class="num">${fmt(m.expenses)}</td>
+      <td class="num" style="color:${m.net>=0?'var(--good)':'var(--bad)'}">${fmt(m.net)}</td>
+      <td class="num">${m.income===0?'—':marg.toFixed(1)+'%'}</td>
+    </tr>`);
+  });
+  tbody.innerHTML=rows.join("");
+}
+
+function renderIncomeRank(){
+  const sorted=[...DATA_2025.incomeBreakdown].sort((a,b)=>b.value-a.value);
+  const total=DATA_2025.totals.income;
+  const rows=sorted.map((d,i)=>{
+    const rc=i===0?"gold":i===1?"silver":i===2?"bronze":"";
+    const share=pct(d.value,total);
+    return `<tr>
+      <td><span class="rank ${rc}">#${i+1}</span></td>
+      <td>${d.name}</td>
+      <td class="num" style="color:${d.value>=0?'var(--good)':'var(--bad)'}">${fmt(d.value)}</td>
+      <td>${share.toFixed(1)}%<span class="bar-inline"><span style="width:${Math.min(100,Math.abs(share)).toFixed(1)}%"></span></span></td>
+    </tr>`;
+  }).join("");
+  document.getElementById("incomeRankBody").innerHTML=rows;
+}
+
+function renderExpenseRank(){
+  const sorted=[...DATA_2025.expenseBreakdown].filter(d=>d.value>0).sort((a,b)=>b.value-a.value);
+  const total=DATA_2025.totals.expenses;
+  const rows=sorted.map((d,i)=>{
+    const rc=i===0?"gold":i===1?"silver":i===2?"bronze":"";
+    const share=pct(d.value,total);
+    return `<tr>
+      <td><span class="rank ${rc}">#${i+1}</span></td>
+      <td>${d.name}</td>
+      <td class="num" style="color:var(--bad)">${fmt(d.value)}</td>
+      <td>${share.toFixed(1)}%<span class="bar-inline"><span style="width:${Math.min(100,share).toFixed(1)}%;background:linear-gradient(90deg,#ef4444,#f97316)"></span></span></td>
+    </tr>`;
+  }).join("");
+  document.getElementById("expenseRankBody").innerHTML=rows;
+}
+
+function switchView(view){
+  document.querySelectorAll(".tab").forEach(t=>t.classList.toggle("active",t.dataset.view===view));
+  let series,title;
+  if(view==="monthly"){series=buildMonthlySeries();title="Vista Mensual"}
+  else if(view==="quarterly"){series=buildQuarterlySeries();title="Vista Trimestral"}
+  else if(view==="weekly"){series=buildWeeklySeries();title="Vista Semanal"}
+  else if(view==="daily"){series=buildDailySeries();title="Vista Diaria (últimos 90 días)"}
+  renderMainChart(series,title);
+}
+document.getElementById("tabs").addEventListener("click",e=>{
+  const btn=e.target.closest(".tab");
+  if(btn) switchView(btn.dataset.view);
+});
+
+switchView("monthly");
+renderNetChart();
+renderYoYChart();
+renderIncomeBreakdown();
+renderExpenseBreakdown();
+renderTable();
+renderIncomeRank();
+renderExpenseRank();
+</script>
+</body>
+</html>
