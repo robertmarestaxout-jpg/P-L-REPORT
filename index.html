@@ -94,9 +94,9 @@
       <div class="sub">NAICS 238160 &middot; Roofing Contractors</div>
     </div>
     <div class="meta">
-      <div>Fecha de corte: <strong>2026-04-24</strong></div>
-      <div>Periodo YTD: <strong>2026-01-01 &rarr; 2026-04-24</strong></div>
-      <div>Comparativo: <strong>Año fiscal 2025 (completo)</strong></div>
+      <div>Fecha de corte: <strong>2026-04-26</strong></div>
+      <div>Periodo YTD: <strong>2026-01-01 &rarr; 2026-04-26</strong></div>
+      <div>Comparativo YoY: <strong>Mismo periodo 2025 &amp; Año fiscal 2025 completo</strong></div>
     </div>
   </header>
 
@@ -108,22 +108,22 @@
     <div class="kpi revenue">
       <div class="label">Ingresos YTD 2026</div>
       <div class="value">$344,923.90</div>
-      <div class="delta">Año 2025 completo: $1,421,939.95</div>
+      <div class="delta down">vs mismo periodo 2025: $362,126.16 (-4.7%)</div>
     </div>
     <div class="kpi expenses">
-      <div class="label">Gastos YTD 2026</div>
-      <div class="value">$18,015.80</div>
-      <div class="delta">Año 2025 completo: $288,338.91</div>
+      <div class="label">Gastos YTD 2026 (incl. COGS)</div>
+      <div class="value">$38,807.32</div>
+      <div class="delta up">vs mismo periodo 2025: $96,221.87 (-59.7%)</div>
     </div>
     <div class="kpi net">
       <div class="label">Net Income YTD 2026</div>
-      <div class="value">$309,379.30</div>
-      <div class="delta up">Año 2025 completo: $1,116,005.33</div>
+      <div class="value">$304,632.66</div>
+      <div class="delta up">vs mismo periodo 2025: $265,904.29 (+14.6%)</div>
     </div>
     <div class="kpi margin">
       <div class="label">Net Margin YTD 2026</div>
-      <div class="value">89.7%</div>
-      <div class="delta">Año anterior: 78.5%</div>
+      <div class="value">88.3%</div>
+      <div class="delta up">Mismo periodo 2025: 73.4%</div>
     </div>
   </div>
 
@@ -137,7 +137,7 @@
   <div class="note" id="viewNote" style="display:none"></div>
   <div class="card">
     <h3>Ingresos vs Gastos <span id="viewLabel" style="color:var(--muted);font-weight:400;font-size:13px">(Mensual 2026 YTD)</span></h3>
-    <div class="subtitle">Datos al cierre del 2026-04-24 &middot; USD</div>
+    <div class="subtitle">Datos al cierre del 2026-04-26 &middot; USD</div>
     <div class="chart-wrap tall"><canvas id="trendChart"></canvas></div>
   </div>
 
@@ -190,7 +190,7 @@
   </div>
 
   <footer>
-    Generado por <span class="brand">Toro Taxes Tax Advisory</span> &middot; Última actualización: 2026-04-24
+    Generado por <span class="brand">Toro Taxes Tax Advisory</span> &middot; Última actualización: 2026-04-26
   </footer>
 </div>
 
@@ -203,41 +203,48 @@ const fmtShort = (n)=>{
   return n.toFixed(0);
 };
 
-const months2026 = ["Ene 2026","Feb 2026","Mar 2026","Abr 1-24 2026"];
-const income2026 = [104369.92, 56328.12, 49051.66, 96371.34];
-const expense2026 = [267.60, 10378.02, -6938.93, 15354.49];
-const net2026 = [104102.32, 29950.10, 55990.59, 81016.85];
+const months2026 = ["Ene 2026","Feb 2026","Mar 2026","Abr 1-26 2026"];
+const income2026  = [104369.92, 55677.98, 88504.66, 96371.34];
+const expense2026 = [   267.60, 26422.90, -6938.93, 20101.13];
+const net2026     = [104102.32, 29255.08, 95443.59, 76270.21];
 
-const totalIncome2026 = 344923.90;
-const totalExpenses2026 = 18015.80;
-const netIncome2026 = 309379.30;
+const totalIncome2026   = 344923.90;
+const totalExpenses2026 = 38807.32;
+const netIncome2026     = 304632.66;
 
-const totalIncome2025 = 1421939.95;
+const totalIncome2025   = 1421939.95;
 const totalExpenses2025 = 288338.91;
-const netIncome2025 = 1116005.33;
+const netIncome2025     = 1116005.33;
+
+const totalIncome2025YTD   = 362126.16;
+const totalExpenses2025YTD = 93484.82;
+const netIncome2025YTD     = 266718.52;
 
 const incomeAccounts = [
-  {name:"Services", value:305470.90},
-  {name:"SumoQuote - Income", value:39453.00}
+  {name:"Services",            value:305470.90},
+  {name:"SumoQuote - Income",  value: 39453.00}
 ];
 
 const expenseCategories = [
-  {name:"Payroll expenses", value:19236.64},
-  {name:"Taxes Paid", value:16811.61},
-  {name:"Supplies & Materials", value:10321.00},
-  {name:"Advertising & marketing", value:3681.46},
-  {name:"Legal & accounting services", value:2162.50},
-  {name:"Office expenses (Software)", value:2004.12},
-  {name:"General business expenses", value:1329.96},
-  {name:"Training", value:1250.76},
-  {name:"QuickBooks Payments Fees", value:1001.57},
-  {name:"Utilities (Recycling)", value:743.00},
-  {name:"Meals", value:426.70},
-  {name:"Dues & subscriptions", value:327.00},
-  {name:"Permits & Licenses", value:300.00},
-  {name:"Contract labor", value:250.00},
-  {name:"Insurance", value:89.02},
-  {name:"Office/General Admin", value:80.46}
+  {name:"Payroll expenses",                   value:23983.28},
+  {name:"Taxes Paid",                         value:16811.61},
+  {name:"COGS (Subcontractor expenses)",      value:16044.88},
+  {name:"Supplies & Materials",               value:10321.00},
+  {name:"Advertising & marketing",            value: 3681.46},
+  {name:"Legal & accounting services",        value: 2162.50},
+  {name:"Office expenses (Software & apps)",  value: 2004.12},
+  {name:"Vehicle expenses (Parking & tolls)", value: 1963.65},
+  {name:"General business (Bank fees)",       value: 1329.96},
+  {name:"Training",                           value: 1250.76},
+  {name:"QuickBooks Payments Fees",           value: 1001.57},
+  {name:"Utilities (Recycling)",              value:  743.00},
+  {name:"Meals",                              value:  426.70},
+  {name:"Dues & subscriptions",               value:  327.00},
+  {name:"Permits & Licenses",                 value:  300.00},
+  {name:"Contract labor",                     value:  250.00},
+  {name:"Gas And Fuel",                       value:  170.41},
+  {name:"Insurance",                          value:   89.02},
+  {name:"Office/General Admin",               value:   80.46}
 ].sort((a,b)=>b.value-a.value);
 
 const ctxTrend = document.getElementById("trendChart").getContext("2d");
@@ -249,11 +256,11 @@ function buildDatasets(view){
     labels = months2026; income = income2026; expense = expense2026;
   } else if(view==="quarter"){
     labels = ["Q1 2026","Q2 2026 (parcial)"];
-    income = [income2026[0]+income2026[1]+income2026[2], income2026[3]];
+    income  = [income2026[0]+income2026[1]+income2026[2], income2026[3]];
     expense = [expense2026[0]+expense2026[1]+expense2026[2], expense2026[3]];
   } else if(view==="week"){
     labels = []; income = []; expense = [];
-    const daysPerMonth = [31,28,31,24];
+    const daysPerMonth = [31,28,31,26];
     const monthName = ["Ene","Feb","Mar","Abr"];
     for(let m=0;m<4;m++){
       const weeks = Math.ceil(daysPerMonth[m]/7);
@@ -263,10 +270,10 @@ function buildDatasets(view){
         expense.push(expense2026[m]/weeks);
       }
     }
-    note = "Vista semanal: distribución proporcional de los totales mensuales de QuickBooks (QBO no expone detalle semanal).";
+    note = "Vista semanal: distribución proporcional de los totales mensuales de QuickBooks (QBO no expone detalle semanal en la respuesta del MCP).";
   } else if(view==="day"){
     labels = []; income = []; expense = [];
-    const daysPerMonth = [31,28,31,24];
+    const daysPerMonth = [31,28,31,26];
     const monthName = ["Ene","Feb","Mar","Abr"];
     for(let m=0;m<4;m++){
       for(let d=1;d<=daysPerMonth[m];d++){
@@ -275,7 +282,7 @@ function buildDatasets(view){
         expense.push(expense2026[m]/daysPerMonth[m]);
       }
     }
-    note = "Vista diaria: distribución proporcional de los totales mensuales (QBO no expone detalle diario en la respuesta).";
+    note = "Vista diaria: distribución proporcional de los totales mensuales (QBO no expone detalle diario en la respuesta del MCP).";
   }
   return {labels,income,expense,note};
 }
@@ -402,7 +409,7 @@ trT.innerHTML = `
   <td><strong>${fmtUSD(totalIncome2026)}</strong></td>
   <td><strong>${fmtUSD(totalExpenses2026)}</strong></td>
   <td class="pos"><strong>${fmtUSD(netIncome2026)}</strong></td>
-  <td><strong>89.7%</strong></td>
+  <td><strong>88.3%</strong></td>
   <td><strong>100.0%</strong></td>
 `;
 tbody.appendChild(trT);
