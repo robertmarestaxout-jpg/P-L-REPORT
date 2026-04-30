@@ -102,7 +102,7 @@
     <div class="subtitle">Profit &amp; Loss Dashboard</div>
     <div class="meta">
       <span><strong>NAICS:</strong> 238160 — Roofing Contractors</span>
-      <span><strong>Fecha de corte:</strong> 27 de abril de 2026</span>
+      <span><strong>Fecha de corte:</strong> 30 de abril de 2026</span>
       <span><strong>Periodo:</strong> YTD 2026</span>
     </div>
   </header>
@@ -111,8 +111,8 @@
   <div class="kpi-grid">
     <div class="kpi">
       <div class="label">Ingresos YTD</div>
-      <div class="value">$344,923.90</div>
-      <div class="delta up">+951.3% vs mismo periodo 2025</div>
+      <div class="value">$346,082.90</div>
+      <div class="delta down">-23.3% vs mismo periodo 2025</div>
     </div>
     <div class="kpi">
       <div class="label">Gastos YTD</div>
@@ -121,12 +121,12 @@
     </div>
     <div class="kpi">
       <div class="label">Net Income YTD</div>
-      <div class="value">$304,632.66</div>
-      <div class="delta up">+595.3% vs mismo periodo 2025</div>
+      <div class="value">$305,791.66</div>
+      <div class="delta down">-14.3% vs mismo periodo 2025</div>
     </div>
     <div class="kpi">
       <div class="label">Net Margin YTD</div>
-      <div class="value">88.3%</div>
+      <div class="value">88.4%</div>
       <div class="delta">vs 78.5% en 2025 (full year)</div>
     </div>
   </div>
@@ -153,7 +153,7 @@
     <div class="card">
       <h2>YoY: 2025 (full year) vs 2026 (YTD)</h2>
       <div class="chart-box-sm"><canvas id="chartYoY"></canvas></div>
-      <div class="note">Comparativo total año vs año en curso. 2026 es parcial al 27-abr.</div>
+      <div class="note">Comparativo total año vs año en curso. 2026 es parcial al 30-abr.</div>
     </div>
   </div>
 
@@ -183,7 +183,7 @@
           <td class="num">$267.60</td>
           <td class="num pos">$104,102.32</td>
           <td class="num">99.7%</td>
-          <td class="num">34.1%</td>
+          <td class="num">34.0%</td>
         </tr>
         <tr>
           <td>Feb 2026</td>
@@ -191,32 +191,32 @@
           <td class="num">$10,378.02</td>
           <td class="num pos">$29,950.10</td>
           <td class="num">53.2%</td>
-          <td class="num">18.4%</td>
+          <td class="num">9.8%</td>
         </tr>
         <tr>
           <td>Mar 2026</td>
-          <td class="num">$49,051.66</td>
+          <td class="num">$88,504.66</td>
           <td class="num">-$6,938.93</td>
           <td class="num pos">$55,990.59</td>
-          <td class="num">114.1%</td>
-          <td class="num">16.0%</td>
+          <td class="num">63.3%</td>
+          <td class="num">18.3%</td>
         </tr>
         <tr>
-          <td>Apr 2026 (1-27)</td>
-          <td class="num">$96,371.34</td>
+          <td>Apr 2026</td>
+          <td class="num">$97,530.34</td>
           <td class="num">$20,101.13</td>
-          <td class="num pos">$76,270.21</td>
-          <td class="num">79.1%</td>
-          <td class="num">31.5%</td>
+          <td class="num pos">$77,429.21</td>
+          <td class="num">79.4%</td>
+          <td class="num">25.3%</td>
         </tr>
       </tbody>
       <tfoot>
         <tr style="font-weight:700; border-top:2px solid var(--border);">
           <td>Total YTD</td>
-          <td class="num">$344,923.90</td>
+          <td class="num">$346,082.90</td>
           <td class="num">$22,762.44</td>
-          <td class="num pos">$304,632.66</td>
-          <td class="num">88.3%</td>
+          <td class="num pos">$305,791.66</td>
+          <td class="num">88.4%</td>
           <td class="num">100.0%</td>
         </tr>
       </tfoot>
@@ -232,8 +232,8 @@
         <tr>
           <td><span class="rank-badge rank-1">1</span></td>
           <td>Services</td>
-          <td class="num">$305,470.90</td>
-          <td class="num">88.4%</td>
+          <td class="num">$306,629.90</td>
+          <td class="num">88.6%</td>
         </tr>
         <tr>
           <td><span class="rank-badge rank-2">2</span></td>
@@ -272,30 +272,62 @@
   const fmtUSD = v => '$' + Number(v).toLocaleString('en-US', {minimumFractionDigits: 0, maximumFractionDigits: 0});
   const fmtUSDFull = v => (v < 0 ? '-' : '') + '$' + Math.abs(Number(v)).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
 
+  // Daily distribution: Jan 31, Feb 28, Mar 31, Apr 30
+  const janDailyInc = 104369.92 / 31;
+  const febDailyInc = 56328.12 / 28;
+  const marDailyInc = 88504.66 / 31;
+  const aprDailyInc = 97530.34 / 30;
+  const janDailyExp = 267.60 / 31;
+  const febDailyExp = 10378.02 / 28;
+  const marDailyExp = -6938.93 / 31;
+  const aprDailyExp = 20101.13 / 30;
+
+  const dayLabels = [];
+  const dayInc = [];
+  const dayExp = [];
+  for (let d = 1; d <= 31; d++) { dayLabels.push(String(d).padStart(2,'0') + '/01'); dayInc.push(janDailyInc); dayExp.push(janDailyExp); }
+  for (let d = 1; d <= 28; d++) { dayLabels.push(String(d).padStart(2,'0') + '/02'); dayInc.push(febDailyInc); dayExp.push(febDailyExp); }
+  for (let d = 1; d <= 31; d++) { dayLabels.push(String(d).padStart(2,'0') + '/03'); dayInc.push(marDailyInc); dayExp.push(marDailyExp); }
+  for (let d = 1; d <= 30; d++) { dayLabels.push(String(d).padStart(2,'0') + '/04'); dayInc.push(aprDailyInc); dayExp.push(aprDailyExp); }
+
+  const weekLabels = ["Jan S1","Jan S2","Jan S3","Jan S4","Feb S1","Feb S2","Feb S3","Feb S4","Mar S1","Mar S2","Mar S3","Mar S4","Apr S1","Apr S2","Apr S3","Apr S4"];
+  const weekInc = [
+    104369.92/4, 104369.92/4, 104369.92/4, 104369.92/4,
+    56328.12/4, 56328.12/4, 56328.12/4, 56328.12/4,
+    88504.66/4, 88504.66/4, 88504.66/4, 88504.66/4,
+    97530.34/4, 97530.34/4, 97530.34/4, 97530.34/4
+  ];
+  const weekExp = [
+    267.60/4, 267.60/4, 267.60/4, 267.60/4,
+    10378.02/4, 10378.02/4, 10378.02/4, 10378.02/4,
+    -6938.93/4, -6938.93/4, -6938.93/4, -6938.93/4,
+    20101.13/4, 20101.13/4, 20101.13/4, 20101.13/4
+  ];
+
   const dataSets = {
     day: {
-      labels: ["01/01", "02/01", "03/01", "04/01", "05/01", "06/01", "07/01", "08/01", "09/01", "10/01", "11/01", "12/01", "13/01", "14/01", "15/01", "16/01", "17/01", "18/01", "19/01", "20/01", "21/01", "22/01", "23/01", "24/01", "25/01", "26/01", "27/01", "28/01", "29/01", "30/01", "31/01", "01/02", "02/02", "03/02", "04/02", "05/02", "06/02", "07/02", "08/02", "09/02", "10/02", "11/02", "12/02", "13/02", "14/02", "15/02", "16/02", "17/02", "18/02", "19/02", "20/02", "21/02", "22/02", "23/02", "24/02", "25/02", "26/02", "27/02", "28/02", "01/03", "02/03", "03/03", "04/03", "05/03", "06/03", "07/03", "08/03", "09/03", "10/03", "11/03", "12/03", "13/03", "14/03", "15/03", "16/03", "17/03", "18/03", "19/03", "20/03", "21/03", "22/03", "23/03", "24/03", "25/03", "26/03", "27/03", "28/03", "29/03", "30/03", "31/03", "01/04", "02/04", "03/04", "04/04", "05/04", "06/04", "07/04", "08/04", "09/04", "10/04", "11/04", "12/04", "13/04", "14/04", "15/04", "16/04", "17/04", "18/04", "19/04", "20/04", "21/04", "22/04", "23/04", "24/04", "25/04", "26/04", "27/04"],
-      income: [3366.77, 3366.77, 3366.77, 3366.77, 3366.77, 3366.77, 3366.77, 3366.77, 3366.77, 3366.77, 3366.77, 3366.77, 3366.77, 3366.77, 3366.77, 3366.77, 3366.77, 3366.77, 3366.77, 3366.77, 3366.77, 3366.77, 3366.77, 3366.77, 3366.77, 3366.77, 3366.77, 3366.77, 3366.77, 3366.77, 3366.77, 2011.72, 2011.72, 2011.72, 2011.72, 2011.72, 2011.72, 2011.72, 2011.72, 2011.72, 2011.72, 2011.72, 2011.72, 2011.72, 2011.72, 2011.72, 2011.72, 2011.72, 2011.72, 2011.72, 2011.72, 2011.72, 2011.72, 2011.72, 2011.72, 2011.72, 2011.72, 2011.72, 2011.72, 1582.31, 1582.31, 1582.31, 1582.31, 1582.31, 1582.31, 1582.31, 1582.31, 1582.31, 1582.31, 1582.31, 1582.31, 1582.31, 1582.31, 1582.31, 1582.31, 1582.31, 1582.31, 1582.31, 1582.31, 1582.31, 1582.31, 1582.31, 1582.31, 1582.31, 1582.31, 1582.31, 1582.31, 1582.31, 1582.31, 1582.31, 3569.31, 3569.31, 3569.31, 3569.31, 3569.31, 3569.31, 3569.31, 3569.31, 3569.31, 3569.31, 3569.31, 3569.31, 3569.31, 3569.31, 3569.31, 3569.31, 3569.31, 3569.31, 3569.31, 3569.31, 3569.31, 3569.31, 3569.31, 3569.31, 3569.31, 3569.31, 3569.31],
-      expense: [8.63, 8.63, 8.63, 8.63, 8.63, 8.63, 8.63, 8.63, 8.63, 8.63, 8.63, 8.63, 8.63, 8.63, 8.63, 8.63, 8.63, 8.63, 8.63, 8.63, 8.63, 8.63, 8.63, 8.63, 8.63, 8.63, 8.63, 8.63, 8.63, 8.63, 8.63, 370.64, 370.64, 370.64, 370.64, 370.64, 370.64, 370.64, 370.64, 370.64, 370.64, 370.64, 370.64, 370.64, 370.64, 370.64, 370.64, 370.64, 370.64, 370.64, 370.64, 370.64, 370.64, 370.64, 370.64, 370.64, 370.64, 370.64, 370.64, -223.84, -223.84, -223.84, -223.84, -223.84, -223.84, -223.84, -223.84, -223.84, -223.84, -223.84, -223.84, -223.84, -223.84, -223.84, -223.84, -223.84, -223.84, -223.84, -223.84, -223.84, -223.84, -223.84, -223.84, -223.84, -223.84, -223.84, -223.84, -223.84, -223.84, -223.84, 744.49, 744.49, 744.49, 744.49, 744.49, 744.49, 744.49, 744.49, 744.49, 744.49, 744.49, 744.49, 744.49, 744.49, 744.49, 744.49, 744.49, 744.49, 744.49, 744.49, 744.49, 744.49, 744.49, 744.49, 744.49, 744.49, 744.49],
+      labels: dayLabels,
+      income: dayInc,
+      expense: dayExp,
       note: 'Vista diaria: distribución proporcional del total mensual por día. No refleja transacciones individuales.'
     },
     week: {
-      labels: ["Jan S1", "Jan S2", "Jan S3", "Jan S4", "Feb S1", "Feb S2", "Feb S3", "Feb S4", "Mar S1", "Mar S2", "Mar S3", "Mar S4", "Apr S1", "Apr S2", "Apr S3", "Apr S4"],
-      income: [26092.48, 26092.48, 26092.48, 26092.48, 14082.03, 14082.03, 14082.03, 14082.03, 12262.92, 12262.92, 12262.92, 12262.92, 24092.83, 24092.83, 24092.83, 24092.83],
-      expense: [66.9, 66.9, 66.9, 66.9, 2594.51, 2594.51, 2594.51, 2594.51, -1734.73, -1734.73, -1734.73, -1734.73, 5025.28, 5025.28, 5025.28, 5025.28],
+      labels: weekLabels,
+      income: weekInc,
+      expense: weekExp,
       note: 'Vista semanal: distribución proporcional del total mensual en 4 semanas por mes.'
     },
     month: {
-      labels: ["Jan 2026", "Feb 2026", "Mar 2026", "Apr 2026 (1-27)"],
-      income: [104369.92, 56328.12, 49051.66, 96371.34],
-      expense: [267.6, 10378.02, -6938.93, 20101.13],
+      labels: ["Jan 2026", "Feb 2026", "Mar 2026", "Apr 2026"],
+      income: [104369.92, 56328.12, 88504.66, 97530.34],
+      expense: [267.60, 10378.02, -6938.93, 20101.13],
       note: 'Vista mensual basada en datos reales de QuickBooks.'
     },
     quarter: {
-      labels: ["Q1 2026 (Ene-Mar)", "Q2 2026 (Abr 1-27)"],
-      income: [209749.7, 96371.34],
+      labels: ["Q1 2026 (Ene-Mar)", "Q2 2026 (Abr)"],
+      income: [249202.70, 97530.34],
       expense: [3706.69, 20101.13],
-      note: 'Vista trimestral. Q2 2026 es parcial al 27-abr.'
+      note: 'Vista trimestral. Q2 2026 es parcial al 30-abr.'
     }
   };
 
@@ -331,8 +363,8 @@
   });
 
   // Net Income por mes
-  const netData = [104102.32, 29950.1, 55990.59, 76270.21];
-  const netLabels = ["Jan 2026", "Feb 2026", "Mar 2026", "Apr 2026 (1-27)"];
+  const netData = [104102.32, 29950.10, 55990.59, 77429.21];
+  const netLabels = ["Jan 2026", "Feb 2026", "Mar 2026", "Apr 2026"];
   new Chart(document.getElementById('chartNetMonth'), {
     type: 'bar',
     data: {
@@ -356,8 +388,8 @@
     data: {
       labels: ['Ingresos', 'Gastos', 'Net Income'],
       datasets: [
-        { label: '2025 (Full Year)', data: [1421939.95, 288338.91, 1116005.33], backgroundColor: COLORS.muted },
-        { label: '2026 YTD', data: [344923.9, 22762.44, 304632.66], backgroundColor: COLORS.accent }
+        { label: '2025 (Full Year)', data: [1421099.95, 288338.91, 1115165.33], backgroundColor: COLORS.muted },
+        { label: '2026 YTD', data: [346082.90, 22762.44, 305791.66], backgroundColor: COLORS.accent }
       ]
     },
     options: {
@@ -373,7 +405,7 @@
     data: {
       labels: ["Services", "SumoQuote - Income", "Credit card rewards"],
       datasets: [{
-        data: [305470.9, 39453.0, 650.14],
+        data: [306629.90, 39453.00, 650.14],
         backgroundColor: ['#22d3ee', '#10b981', '#fbbf24', '#a78bfa', '#f472b6']
       }]
     },
@@ -390,7 +422,7 @@
       labels: ["Payroll expenses", "Taxes Paid", "Supplies & Materials", "Advertising & marketing", "Legal & accounting services", "Office expenses (Software & apps)", "Vehicle expenses (Parking & tolls)", "General business expenses (Bank fees)", "Training", "QuickBooks Payments Fees", "Utilities (Recycling)", "Meals", "Dues & subscriptions", "Permits & Licenses", "Contract labor", "Gas And Fuel", "Insurance", "Office/General Administrative Expenses"],
       datasets: [{
         label: 'Gasto YTD',
-        data: [23983.28, 16811.61, 10321.0, 3681.46, 2162.5, 2004.12, 1963.65, 1329.96, 1250.76, 1001.57, 743.0, 426.7, 327.0, 300.0, 250.0, 170.41, 89.02, 80.46],
+        data: [23983.28, 16811.61, 10321.00, 3681.46, 2162.50, 2004.12, 1963.65, 1329.96, 1250.76, 1001.57, 743.00, 426.70, 327.00, 300.00, 250.00, 170.41, 89.02, 80.46],
         backgroundColor: COLORS.bad
       }]
     },
