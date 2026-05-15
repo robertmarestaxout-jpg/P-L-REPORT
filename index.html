@@ -1,315 +1,387 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Azapro Roofing LLC - P&amp;L Dashboard | Toro Taxes</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Azapro Roofing LLC — P&amp;L Dashboard</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
-:root {
-  --bg:#0b1220; --panel:#111a2e; --panel2:#0f1729; --border:#1e2a44;
-  --text:#e6edf7; --muted:#94a3b8; --accent:#22d3ee; --good:#10b981; --bad:#ef4444;
-  --gold:#fbbf24; --silver:#cbd5e1; --bronze:#d97706;
-}
-* { box-sizing:border-box; }
-body { margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; background:var(--bg); color:var(--text); }
-.wrap { max-width:1400px; margin:0 auto; padding:24px; }
-header { padding:24px; background:linear-gradient(135deg,var(--panel) 0%,var(--panel2) 100%); border:1px solid var(--border); border-radius:16px; margin-bottom:24px; }
-header h1 { margin:0 0 4px 0; font-size:28px; letter-spacing:-0.5px; }
-header .sub { color:var(--muted); font-size:14px; }
-header .meta { display:flex; gap:24px; margin-top:12px; flex-wrap:wrap; font-size:13px; color:var(--muted); }
-header .meta strong { color:var(--text); }
-.kpis { display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:16px; margin-bottom:24px; }
-.kpi { background:var(--panel); border:1px solid var(--border); border-radius:14px; padding:18px; }
-.kpi .label { font-size:12px; color:var(--muted); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:8px; }
-.kpi .value { font-size:26px; font-weight:700; letter-spacing:-0.5px; }
-.kpi .delta { display:inline-block; margin-top:8px; font-size:12px; padding:3px 8px; border-radius:999px; background:rgba(255,255,255,0.05); color:var(--muted); }
-.delta.good { background:rgba(16,185,129,0.15); color:var(--good); }
-.delta.bad { background:rgba(239,68,68,0.15); color:var(--bad); }
-.card { background:var(--panel); border:1px solid var(--border); border-radius:14px; padding:20px; margin-bottom:24px; }
-.card h2 { margin:0 0 4px 0; font-size:16px; }
-.card .subtitle { color:var(--muted); font-size:12px; margin-bottom:14px; }
-.card .note { color:var(--muted); font-size:11px; margin-top:8px; font-style:italic; }
-.grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:24px; }
-@media (max-width:900px) { .grid-2 { grid-template-columns:1fr; } }
-.tabs { display:flex; gap:6px; margin-bottom:14px; }
-.tab { padding:6px 14px; background:var(--panel2); border:1px solid var(--border); border-radius:8px; cursor:pointer; font-size:13px; color:var(--muted); }
-.tab.active { background:var(--accent); color:#000; border-color:var(--accent); font-weight:600; }
-.chart-wrap { position:relative; height:320px; }
-.chart-wrap.tall { height:380px; }
-table { width:100%; border-collapse:collapse; font-size:13px; }
-th, td { padding:10px 12px; text-align:left; border-bottom:1px solid var(--border); }
-th { color:var(--muted); font-weight:500; text-transform:uppercase; font-size:11px; letter-spacing:0.5px; }
-td.good { color:var(--good); }
-td.bad { color:var(--bad); }
-.rank-badge { display:inline-block; padding:3px 9px; border-radius:6px; font-weight:700; font-size:11px; background:var(--panel2); color:var(--muted); }
-.rank-badge.gold { background:rgba(251,191,36,0.2); color:var(--gold); }
-.rank-badge.silver { background:rgba(203,213,225,0.2); color:var(--silver); }
-.rank-badge.bronze { background:rgba(217,119,6,0.2); color:var(--bronze); }
-footer { text-align:center; padding:24px; color:var(--muted); font-size:12px; }
-.disclaimer { background:rgba(251,191,36,0.08); border:1px solid rgba(251,191,36,0.3); border-radius:10px; padding:12px 16px; margin-bottom:24px; font-size:12px; color:#fde68a; }
+  :root{
+    --bg:#0b1220; --panel:#0f172a; --panel2:#111a2e; --border:#1e293b;
+    --text:#e5e7eb; --muted:#94a3b8; --accent:#22d3ee; --good:#10b981; --bad:#ef4444; --warn:#f59e0b;
+    --gold:#eab308; --silver:#9ca3af; --bronze:#b45309;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Inter,sans-serif;}
+  .wrap{max-width:1300px;margin:0 auto;padding:24px;}
+  header{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px;border-bottom:1px solid var(--border);padding-bottom:16px;margin-bottom:24px;}
+  header .brand h1{margin:0;font-size:22px;letter-spacing:.4px}
+  header .brand .sub{color:var(--muted);font-size:13px;margin-top:4px;}
+  header .meta{font-size:12px;color:var(--muted);text-align:right;line-height:1.6;}
+  header .meta .pill{display:inline-block;background:#0b3b46;color:var(--accent);padding:2px 8px;border-radius:999px;font-weight:600;}
+  .grid{display:grid;gap:16px;}
+  .kpis{grid-template-columns:repeat(4,minmax(0,1fr));}
+  .card{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:16px;}
+  .kpi .label{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.6px;}
+  .kpi .value{font-size:26px;font-weight:700;margin-top:6px;}
+  .kpi .delta{font-size:12px;margin-top:4px;}
+  .kpi .delta.good{color:var(--good);} .kpi .delta.bad{color:var(--bad);}
+  h2{font-size:15px;margin:0 0 12px;color:#cbd5e1;letter-spacing:.4px;text-transform:uppercase;}
+  .row2{grid-template-columns:1fr;}
+  @media(min-width:980px){ .row2{grid-template-columns:2fr 1fr;} }
+  .tabs{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap;}
+  .tab{background:transparent;color:var(--muted);border:1px solid var(--border);border-radius:8px;padding:6px 12px;font-size:12px;cursor:pointer;}
+  .tab.active{background:var(--accent);color:#06212a;border-color:var(--accent);font-weight:700;}
+  .note{font-size:11px;color:var(--muted);margin-top:6px;}
+  .row3{grid-template-columns:1fr;}
+  @media(min-width:980px){ .row3{grid-template-columns:1fr 1fr;} }
+  table{width:100%;border-collapse:collapse;font-size:13px;}
+  th,td{padding:8px 10px;border-bottom:1px solid var(--border);text-align:right;}
+  th:first-child,td:first-child{text-align:left;}
+  th{color:var(--muted);font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.5px;}
+  tr:hover td{background:#0c1628;}
+  .num{font-variant-numeric:tabular-nums;}
+  .good{color:var(--good);} .bad{color:var(--bad);}
+  .rank{display:inline-block;width:22px;height:22px;border-radius:50%;text-align:center;line-height:22px;font-size:11px;font-weight:700;color:#0b1220;margin-right:6px;}
+  .rank.g{background:var(--gold);} .rank.s{background:var(--silver);} .rank.b{background:var(--bronze);}
+  canvas{max-width:100%;}
+  footer{margin-top:32px;border-top:1px solid var(--border);padding-top:14px;color:var(--muted);font-size:12px;text-align:center;}
+  @media(max-width:760px){ .kpis{grid-template-columns:repeat(2,1fr);} header .meta{text-align:left;} }
 </style>
 </head>
 <body>
 <div class="wrap">
+
   <header>
-    <h1>Azapro Roofing LLC</h1>
-    <div class="sub">Profit &amp; Loss Dashboard</div>
+    <div class="brand">
+      <h1>AZAPRO ROOFING LLC</h1>
+      <div class="sub">Profit &amp; Loss Dashboard · NAICS 238160 — Roofing Contractors</div>
+    </div>
     <div class="meta">
-      <div>NAICS: <strong>238160</strong> (Roofing Contractors)</div>
-      <div>Periodo YTD: <strong>2026-01-01 → 2026-05-14</strong></div>
-      <div>Comparativo: <strong>FY 2025</strong></div>
-      <div>Fecha de corte: <strong>2026-05-14</strong></div>
+      <div>Fecha de corte: <span class="pill" id="asof">2026-05-15</span></div>
+      <div>Periodo YTD: 1 Ene 2026 — 15 May 2026</div>
+      <div>Comparativo: Año fiscal 2025 (completo)</div>
     </div>
   </header>
 
-  <div class="kpis">
-    <div class="kpi">
+  <section class="grid kpis">
+    <div class="card kpi">
       <div class="label">Ingresos YTD</div>
-      <div class="value">$346,082.90</div>
-      <span class="delta good">+938.3% vs PY</span>
+      <div class="value num">$344,447.90</div>
+      <div class="delta good">▲ vs YTD 2025 ($33,062.16) · +941.7%</div>
     </div>
-    <div class="kpi">
+    <div class="card kpi">
       <div class="label">Gastos YTD</div>
-      <div class="value">$29,834.79</div>
-      <span class="delta good">-77.4% vs PY</span>
+      <div class="value num">$29,834.79</div>
+      <div class="delta good">▼ vs YTD 2025 ($112,634.16) · −73.5%</div>
     </div>
-    <div class="kpi">
+    <div class="card kpi">
       <div class="label">Net Income YTD</div>
-      <div class="value">$298,719.31</div>
-      <span class="delta good">+398.2% vs PY</span>
+      <div class="value num">$297,084.31</div>
+      <div class="delta good">▲ vs YTD 2025 (−$79,572.00) · turnaround</div>
     </div>
-    <div class="kpi">
+    <div class="card kpi">
       <div class="label">Net Margin YTD</div>
-      <div class="value">86.3%</div>
-      <span class="delta good">+386.9 pp vs PY</span>
+      <div class="value num">86.25%</div>
+      <div class="delta good">▲ vs YTD 2025 (−240.6%)</div>
     </div>
-  </div>
+  </section>
 
-  <div class="card">
-    <h2>Ingresos vs Gastos</h2>
-    <div class="subtitle">Vista temporal del flujo operativo (2026 YTD)</div>
-    <div class="tabs">
-      <div class="tab" data-view="day">Día</div>
-      <div class="tab" data-view="week">Semana</div>
-      <div class="tab active" data-view="month">Mes</div>
-      <div class="tab" data-view="quarter">Trimestre</div>
+  <section class="grid" style="margin-top:16px;">
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
+        <h2>Ingresos vs Gastos</h2>
+        <div class="tabs" id="tabs">
+          <button class="tab" data-mode="day">Día</button>
+          <button class="tab" data-mode="week">Semana</button>
+          <button class="tab active" data-mode="month">Mes</button>
+          <button class="tab" data-mode="quarter">Trimestre</button>
+        </div>
+      </div>
+      <canvas id="lineChart" height="110"></canvas>
+      <div class="note" id="lineNote">Granularidad: Mes. Datos directos de QuickBooks.</div>
     </div>
-    <div class="chart-wrap"><canvas id="lineChart"></canvas></div>
-    <div class="note" id="lineNote"></div>
-  </div>
+  </section>
 
-  <div class="grid-2">
+  <section class="grid row3" style="margin-top:16px;">
     <div class="card">
-      <h2>Net Income Mensual</h2>
-      <div class="subtitle">Verde = positivo · Rojo = negativo</div>
-      <div class="chart-wrap"><canvas id="netBarChart"></canvas></div>
-    </div>
-    <div class="card">
-      <h2>Comparativo Año vs Año</h2>
-      <div class="subtitle">FY 2025 completo vs 2026 YTD</div>
-      <div class="chart-wrap"><canvas id="yoyChart"></canvas></div>
-    </div>
-  </div>
-
-  <div class="grid-2">
-    <div class="card">
-      <h2>Ingresos por Cuenta</h2>
-      <div class="subtitle">Distribución 2026 YTD</div>
-      <div class="chart-wrap"><canvas id="incomeDoughnut"></canvas></div>
+      <h2>Net Income Mensual (YTD 2026)</h2>
+      <canvas id="netChart" height="160"></canvas>
     </div>
     <div class="card">
-      <h2>Gastos por Categoría</h2>
-      <div class="subtitle">Top categorías 2026 YTD</div>
-      <div class="chart-wrap tall"><canvas id="expenseBar"></canvas></div>
+      <h2>YoY — 2025 Completo vs 2026 YTD</h2>
+      <canvas id="yoyChart" height="160"></canvas>
+      <div class="note">Comparativo de magnitud. 2026 YTD = Ene–15 May solamente.</div>
     </div>
-  </div>
+  </section>
 
-  <div class="card">
-    <h2>Detalle Mensual 2026</h2>
-    <div class="subtitle">Ingresos, gastos, margen y aporte porcentual al YTD</div>
+  <section class="grid row2" style="margin-top:16px;">
+    <div class="card">
+      <h2>Gastos por Categoría YTD</h2>
+      <canvas id="expensesBar" height="220"></canvas>
+    </div>
+    <div class="card">
+      <h2>Ingresos por Cuenta YTD</h2>
+      <canvas id="incomeDoughnut" height="220"></canvas>
+    </div>
+  </section>
+
+  <section class="card" style="margin-top:16px;">
+    <h2>Detalle Mensual YTD 2026</h2>
     <table>
-      <thead><tr><th>Mes</th><th>Ingresos</th><th>Gastos</th><th>Net Income</th><th>Margen</th><th>Aporte % YTD</th></tr></thead>
-      <tbody>
-<tr><td>Ene 2026</td><td>$104,369.92</td><td>$267.60</td><td class="good">$104,102.32</td><td>99.7%</td><td>30.2%</td></tr>
-<tr><td>Feb 2026</td><td>$56,328.12</td><td>$10,378.02</td><td class="good">$29,950.10</td><td>53.2%</td><td>16.3%</td></tr>
-<tr><td>Mar 2026</td><td>$49,051.66</td><td>$-6,938.93</td><td class="good">$55,990.59</td><td>114.1%</td><td>14.2%</td></tr>
-<tr><td>Abr 2026</td><td>$97,530.34</td><td>$20,101.13</td><td class="good">$77,429.21</td><td>79.4%</td><td>28.2%</td></tr>
-<tr><td>May 1-14 2026</td><td>$0.00</td><td>$7,072.35</td><td class="bad">$-7,072.35</td><td>0.0%</td><td>0.0%</td></tr>
+      <thead>
+        <tr>
+          <th>Mes</th>
+          <th>Ingresos</th>
+          <th>Gastos</th>
+          <th>Net Income</th>
+          <th>Margen</th>
+          <th>Aporte %</th>
+        </tr>
+      </thead>
+      <tbody id="monthlyTbody"></tbody>
+      <tfoot>
+        <tr>
+          <th>Total YTD</th>
+          <th class="num">$344,447.90</th>
+          <th class="num">$29,834.79</th>
+          <th class="num good">$297,084.31</th>
+          <th class="num">86.25%</th>
+          <th class="num">100.0%</th>
+        </tr>
+      </tfoot>
+    </table>
+  </section>
 
+  <section class="card" style="margin-top:16px;">
+    <h2>Top Cuentas de Ingreso YTD</h2>
+    <table>
+      <thead>
+        <tr><th>#</th><th>Cuenta</th><th>Monto</th><th>% del Total</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><span class="rank g">1</span></td><td>Services</td><td class="num">$304,994.90</td><td class="num">88.55%</td></tr>
+        <tr><td><span class="rank s">2</span></td><td>SumoQuote - Income</td><td class="num">$39,453.00</td><td class="num">11.45%</td></tr>
+        <tr><td><span class="rank b">3</span></td><td>Credit card rewards (Other Income)</td><td class="num">$650.14</td><td class="num">0.19%</td></tr>
       </tbody>
     </table>
-  </div>
+  </section>
 
-  <div class="card">
-    <h2>Top Cuentas de Ingreso</h2>
-    <div class="subtitle">Ranking 2026 YTD</div>
-    <table>
-      <thead><tr><th>Rank</th><th>Cuenta</th><th>Total</th><th>% del Total</th></tr></thead>
-      <tbody>
-<tr><td><span class="rank-badge gold">#1</span></td><td>Services</td><td>$306,629.90</td><td>88.6%</td></tr>
-<tr><td><span class="rank-badge silver">#2</span></td><td>SumoQuote - Income</td><td>$39,453.00</td><td>11.4%</td></tr>
-<tr><td><span class="rank-badge bronze">#3</span></td><td>Credit card rewards</td><td>$650.14</td><td>0.2%</td></tr>
-
-      </tbody>
-    </table>
-  </div>
-
-  <footer>Toro Taxes Tax Advisory · Dashboard generado automáticamente · Datos extraídos directamente desde QuickBooks Online</footer>
+  <footer>
+    Generado automáticamente · Datos directos de QuickBooks · Toro Taxes Tax Advisory · Actualizado 2026-05-15
+  </footer>
 </div>
 
 <script>
-const DATA = {"months2026": [{"label": "Ene", "inc": 104369.92, "exp": 267.6, "net": 104102.32}, {"label": "Feb", "inc": 56328.12, "exp": 10378.02, "net": 29950.1}, {"label": "Mar", "inc": 49051.66, "exp": -6938.93, "net": 55990.59}, {"label": "Abr", "inc": 97530.34, "exp": 20101.13, "net": 77429.21}, {"label": "May 1-14", "inc": 0, "exp": 7072.35, "net": -7072.35}], "months2025": [{"label": "Ene", "inc": 22098.67, "exp": 15038.21, "net": 7060.46}, {"label": "Feb", "inc": 2690, "exp": 25500.63, "net": -22810.63}, {"label": "Mar", "inc": 3651.49, "exp": 34792.1, "net": -31140.61}, {"label": "Abr", "inc": 4368, "exp": 18981.06, "net": -14613.06}, {"label": "May", "inc": 525, "exp": 37879.78, "net": -38674.78}, {"label": "Jun", "inc": 43555.14, "exp": 100465.81, "net": -56910.67}, {"label": "Jul", "inc": 12918.14, "exp": 47508.79, "net": -35193.12}, {"label": "Ago", "inc": 1965, "exp": 12755.68, "net": -10843.26}, {"label": "Sep", "inc": 17802.74, "exp": 22037.6, "net": -4462.36}, {"label": "Oct", "inc": 29937, "exp": -1248.68, "net": 30217.8}, {"label": "Nov", "inc": 7274.32, "exp": -4310.71, "net": 11497.65}, {"label": "Dic", "inc": 28191.25, "exp": -2444.41, "net": 30635.66}], "income2026": [{"account": "Services", "total": 306629.9}, {"account": "SumoQuote - Income", "total": 39453.0}, {"account": "Credit card rewards", "total": 650.14}], "expense2026": [{"account": "Wages", "total": 25404.9}, {"account": "Taxes Paid", "total": 16811.61}, {"account": "Supplies & Materials", "total": 10321.0}, {"account": "Advertising & marketing", "total": 3681.46}, {"account": "Legal fees", "total": 2162.5}, {"account": "Software & apps", "total": 2004.12}, {"account": "Parking & tolls", "total": 1963.65}, {"account": "Payroll Taxes", "total": 1637.91}, {"account": "Bank fees & service charges", "total": 1316.24}, {"account": "Training", "total": 1250.76}, {"account": "QuickBooks Payments Fees", "total": 1114.39}, {"account": "Recycling", "total": 743.0}, {"account": "Meals", "total": 426.7}, {"account": "Dues & subscriptions", "total": 327.0}, {"account": "Permits & Licenses", "total": 300.0}, {"account": "Contract labor", "total": 250.0}, {"account": "Gas And Fuel", "total": 170.41}, {"account": "Insurance", "total": 89.02}, {"account": "Office/General Administrative", "total": 80.46}], "yoy": {"labels": ["Ingresos", "Gastos", "Net Income"], "py_full": [1421099.95, 288338.91, 1115165.33], "ytd": [346082.9, 29834.79, 298719.31]}};
-const accent="#22d3ee", good="#10b981", bad="#ef4444";
-Chart.defaults.color="#94a3b8";
-Chart.defaults.borderColor="#1e2a44";
-Chart.defaults.font.family="-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif";
+  const fmt = v => v.toLocaleString('en-US',{style:'currency',currency:'USD',minimumFractionDigits:2,maximumFractionDigits:2});
+  const C = {accent:'#22d3ee', good:'#10b981', bad:'#ef4444', warn:'#f59e0b', muted:'#94a3b8', grid:'#1e293b'};
+  Chart.defaults.color = '#cbd5e1';
+  Chart.defaults.borderColor = C.grid;
+  Chart.defaults.font.family = 'ui-sans-serif,system-ui,Segoe UI,Roboto,Inter';
 
-function fmtUSD(v){ return (v<0?"-":"")+"$"+Math.abs(v).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+  const months = [
+    {label:'Ene', income:104369.92, expense:267.60, net:104102.32},
+    {label:'Feb', income:56328.12, expense:26378.02, net:29950.10},
+    {label:'Mar', income:88504.66, expense:-6938.93, net:55990.59},
+    {label:'Abr', income:97530.34, expense:20101.13, net:77429.21},
+    {label:'May (1-15)', income:-1635.00, expense:7072.35, net:-8707.35}
+  ];
+  const totalIncome = 344447.90;
 
-// Line chart - month view by default
-const lineCtx = document.getElementById('lineChart').getContext('2d');
-let lineChart;
+  const lineCtx = document.getElementById('lineChart').getContext('2d');
+  let lineChart;
 
-function renderLine(view) {
-  const months = DATA.months2026;
-  let labels, inc, exp;
-  const note = document.getElementById('lineNote');
-  if (view === 'month') {
-    labels = months.map(m => m.label);
-    inc = months.map(m => m.inc);
-    exp = months.map(m => m.exp);
-    note.textContent = '';
-  } else if (view === 'quarter') {
-    labels = ['Q1 2026','Q2 (YTD)'];
-    const q1Inc = months[0].inc + months[1].inc + months[2].inc;
-    const q2Inc = months[3].inc + months[4].inc;
-    const q1Exp = months[0].exp + months[1].exp + months[2].exp;
-    const q2Exp = months[3].exp + months[4].exp;
-    inc = [q1Inc, q2Inc]; exp = [q1Exp, q2Exp];
-    note.textContent = 'Q2 2026 incluye solo Abril + parcial Mayo (al corte).';
-  } else if (view === 'week') {
-    labels = []; inc = []; exp = [];
-    months.forEach(m => {
-      const weeks = (m.label === 'May 1-14') ? 2 : 4;
-      for (let i=1; i<=weeks; i++) {
-        labels.push(m.label + ' S' + i);
-        inc.push(m.inc / weeks);
-        exp.push(m.exp / weeks);
-      }
-    });
-    note.textContent = 'Distribución semanal proporcional sobre los totales mensuales (no representa transacciones diarias reales).';
-  } else if (view === 'day') {
-    labels = []; inc = []; exp = [];
-    const daysPerMonth = [31,28,31,30,14];
-    months.forEach((m,idx) => {
-      const days = daysPerMonth[idx];
-      for (let i=1; i<=days; i+=3) {
-        labels.push(m.label + ' d' + i);
-        inc.push(m.inc / (days/3));
-        exp.push(m.exp / (days/3));
-      }
-    });
-    note.textContent = 'Vista diaria estimada (cada punto representa ~3 días). Distribución proporcional.';
+  function buildLineData(mode){
+    let labels, incomeArr, expenseArr;
+    const expSimple = months.map(m=>m.expense);
+    const incSimple = months.map(m=>m.income);
+    if(mode==='month'){
+      labels = months.map(m=>m.label);
+      incomeArr = incSimple;
+      expenseArr = expSimple;
+    } else if (mode==='quarter'){
+      const q1i = incSimple[0]+incSimple[1]+incSimple[2];
+      const q1e = expSimple[0]+expSimple[1]+expSimple[2];
+      const q2i = incSimple[3]+incSimple[4];
+      const q2e = expSimple[3]+expSimple[4];
+      labels = ['Q1 2026','Q2 2026 (parcial)'];
+      incomeArr = [q1i, q2i];
+      expenseArr = [q1e, q2e];
+    } else if (mode==='week'){
+      labels = [];
+      incomeArr = [];
+      expenseArr = [];
+      const split = [{lbl:'Ene', w:4},{lbl:'Feb',w:4},{lbl:'Mar',w:4},{lbl:'Abr',w:4},{lbl:'May',w:2}];
+      split.forEach((s,mi)=>{
+        for(let w=1; w<=s.w; w++){
+          labels.push(s.lbl+' S'+w);
+          incomeArr.push(incSimple[mi]/s.w);
+          expenseArr.push(expSimple[mi]/s.w);
+        }
+      });
+    } else {
+      labels = [];
+      incomeArr = [];
+      expenseArr = [];
+      const daysPerMonth = [31,28,31,30,15];
+      months.forEach((m,mi)=>{
+        const dpd_i = m.income/daysPerMonth[mi];
+        const dpd_e = m.expense/daysPerMonth[mi];
+        for(let d=1; d<=daysPerMonth[mi]; d++){
+          labels.push(m.label.slice(0,3)+' '+d);
+          incomeArr.push(dpd_i);
+          expenseArr.push(dpd_e);
+        }
+      });
+    }
+    return {labels, incomeArr, expenseArr};
   }
-  if (lineChart) lineChart.destroy();
-  lineChart = new Chart(lineCtx, {
-    type: 'line',
-    data: {
-      labels: labels,
-      datasets: [
-        { label:'Ingresos', data: inc, borderColor: accent, backgroundColor:'rgba(34,211,238,0.12)', fill:true, tension:0.35, borderWidth:2.5, pointRadius:3 },
-        { label:'Gastos', data: exp, borderColor: bad, backgroundColor:'rgba(239,68,68,0.10)', fill:true, tension:0.35, borderWidth:2.5, pointRadius:3 }
-      ]
+
+  function renderLine(mode){
+    const {labels, incomeArr, expenseArr} = buildLineData(mode);
+    document.getElementById('lineNote').textContent =
+      (mode==='day' ? 'Granularidad: Día. Los valores diarios se distribuyen proporcionalmente desde los totales mensuales (no son transacciones diarias reales).' :
+       mode==='week'? 'Granularidad: Semana. Los valores semanales se distribuyen proporcionalmente desde los totales mensuales.' :
+       mode==='quarter'? 'Granularidad: Trimestre. Q2 2026 es parcial (Abr + 1-15 May).' :
+       'Granularidad: Mes. Datos directos de QuickBooks.');
+
+    if(lineChart) lineChart.destroy();
+    lineChart = new Chart(lineCtx, {
+      type:'line',
+      data:{
+        labels,
+        datasets:[
+          {label:'Ingresos', data:incomeArr, borderColor:C.accent, backgroundColor:'rgba(34,211,238,.15)', tension:.35, fill:true, borderWidth:2, pointRadius:3},
+          {label:'Gastos', data:expenseArr, borderColor:C.bad, backgroundColor:'rgba(239,68,68,.10)', tension:.35, fill:true, borderWidth:2, pointRadius:3}
+        ]
+      },
+      options:{
+        responsive:true,
+        plugins:{legend:{labels:{color:'#cbd5e1'}}, tooltip:{callbacks:{label:c=>c.dataset.label+': '+fmt(c.parsed.y)}}},
+        scales:{
+          x:{ticks:{color:C.muted, maxRotation:0, autoSkip:true, maxTicksLimit:14}, grid:{color:C.grid}},
+          y:{ticks:{color:C.muted, callback:v=>'$'+v.toLocaleString()}, grid:{color:C.grid}}
+        }
+      }
+    });
+  }
+
+  document.querySelectorAll('#tabs .tab').forEach(b=>{
+    b.addEventListener('click', ()=>{
+      document.querySelectorAll('#tabs .tab').forEach(x=>x.classList.remove('active'));
+      b.classList.add('active');
+      renderLine(b.dataset.mode);
+    });
+  });
+  renderLine('month');
+
+  new Chart(document.getElementById('netChart'), {
+    type:'bar',
+    data:{
+      labels: months.map(m=>m.label),
+      datasets:[{
+        label:'Net Income',
+        data: months.map(m=>m.net),
+        backgroundColor: months.map(m=>m.net>=0?C.good:C.bad),
+        borderRadius:4
+      }]
     },
-    options: {
-      responsive:true, maintainAspectRatio:false,
-      plugins:{ legend:{ position:'top' }, tooltip:{ callbacks:{ label: c => c.dataset.label + ': ' + fmtUSD(c.parsed.y) } } },
-      scales:{ y:{ ticks:{ callback: v => '$' + (v/1000).toFixed(0) + 'k' } } }
+    options:{
+      plugins:{legend:{display:false}, tooltip:{callbacks:{label:c=>fmt(c.parsed.y)}}},
+      scales:{
+        x:{ticks:{color:C.muted}, grid:{color:C.grid}},
+        y:{ticks:{color:C.muted, callback:v=>'$'+v.toLocaleString()}, grid:{color:C.grid}}
+      }
     }
   });
-}
-renderLine('month');
-document.querySelectorAll('.tab').forEach(t => {
-  t.addEventListener('click', () => {
-    document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
-    t.classList.add('active');
-    renderLine(t.dataset.view);
+
+  new Chart(document.getElementById('yoyChart'), {
+    type:'bar',
+    data:{
+      labels:['Ingresos','Gastos','Net Income'],
+      datasets:[
+        {label:'2025 (Completo)', data:[1421099.95, 288338.91, 1115165.33], backgroundColor:'rgba(148,163,184,.55)'},
+        {label:'2026 YTD', data:[344447.90, 29834.79, 297084.31], backgroundColor:C.accent}
+      ]
+    },
+    options:{
+      plugins:{legend:{labels:{color:'#cbd5e1'}}, tooltip:{callbacks:{label:c=>c.dataset.label+': '+fmt(c.parsed.y)}}},
+      scales:{
+        x:{ticks:{color:C.muted}, grid:{color:C.grid}},
+        y:{ticks:{color:C.muted, callback:v=>'$'+v.toLocaleString()}, grid:{color:C.grid}}
+      }
+    }
   });
-});
 
-// Net bar chart
-const months = DATA.months2026;
-new Chart(document.getElementById('netBarChart'), {
-  type:'bar',
-  data:{
-    labels: months.map(m => m.label),
-    datasets:[{
-      label:'Net Income',
-      data: months.map(m => m.net),
-      backgroundColor: months.map(m => m.net>=0 ? good : bad),
-      borderRadius:6
-    }]
-  },
-  options:{
-    responsive:true, maintainAspectRatio:false,
-    plugins:{ legend:{ display:false }, tooltip:{ callbacks:{ label: c => fmtUSD(c.parsed.y) } } },
-    scales:{ y:{ ticks:{ callback: v => '$' + (v/1000).toFixed(0) + 'k' } } }
-  }
-});
+  new Chart(document.getElementById('incomeDoughnut'),{
+    type:'doughnut',
+    data:{
+      labels:['Services','SumoQuote - Income','Credit card rewards'],
+      datasets:[{
+        data:[304994.90, 39453.00, 650.14],
+        backgroundColor:[C.accent,'#0ea5e9','#22c55e'],
+        borderColor:'#0b1220', borderWidth:2
+      }]
+    },
+    options:{
+      plugins:{
+        legend:{position:'bottom', labels:{color:'#cbd5e1', boxWidth:12}},
+        tooltip:{callbacks:{label:c=>c.label+': '+fmt(c.parsed)+' ('+((c.parsed/345098.04)*100).toFixed(1)+'%)'}}
+      },
+      cutout:'62%'
+    }
+  });
 
-// YoY chart
-new Chart(document.getElementById('yoyChart'), {
-  type:'bar',
-  data:{
-    labels: DATA.yoy.labels,
-    datasets:[
-      { label:'FY 2025 (full)', data: DATA.yoy.py_full, backgroundColor:'#64748b', borderRadius:6 },
-      { label:'2026 YTD', data: DATA.yoy.ytd, backgroundColor: accent, borderRadius:6 }
-    ]
-  },
-  options:{
-    responsive:true, maintainAspectRatio:false,
-    plugins:{ tooltip:{ callbacks:{ label: c => c.dataset.label + ': ' + fmtUSD(c.parsed.y) } } },
-    scales:{ y:{ ticks:{ callback: v => '$' + (v/1000).toFixed(0) + 'k' } } }
-  }
-});
+  const expenseRows = [
+    ['Payroll expenses', 30942.81],
+    ['Taxes Paid', 16811.61],
+    ['Supplies & Materials', 10321.00],
+    ['Advertising & marketing', 3681.46],
+    ['Legal fees', 2162.50],
+    ['Office expenses (Software & apps)', 2004.12],
+    ['Vehicle expenses (Parking & tolls)', 1963.65],
+    ['General business (Bank fees)', 1329.96],
+    ['Training', 1250.76],
+    ['QuickBooks Payments Fees', 1114.39],
+    ['Utilities (Recycling)', 743.00],
+    ['Meals', 426.70],
+    ['Dues & subscriptions', 327.00],
+    ['Permits & Licenses', 300.00],
+    ['Contract labor', 250.00],
+    ['Gas And Fuel', 170.41],
+    ['Insurance', 89.02],
+    ['Office/General Administrative', 80.46]
+  ];
+  new Chart(document.getElementById('expensesBar'),{
+    type:'bar',
+    data:{
+      labels: expenseRows.map(r=>r[0]),
+      datasets:[{
+        label:'Gasto YTD',
+        data: expenseRows.map(r=>r[1]),
+        backgroundColor: C.bad, borderRadius:3
+      }]
+    },
+    options:{
+      indexAxis:'y',
+      plugins:{legend:{display:false}, tooltip:{callbacks:{label:c=>fmt(c.parsed.x)}}},
+      scales:{
+        x:{ticks:{color:C.muted, callback:v=>'$'+v.toLocaleString()}, grid:{color:C.grid}},
+        y:{ticks:{color:C.muted, font:{size:11}}, grid:{display:false}}
+      }
+    }
+  });
 
-// Income doughnut
-new Chart(document.getElementById('incomeDoughnut'), {
-  type:'doughnut',
-  data:{
-    labels: DATA.income2026.map(x => x.account),
-    datasets:[{
-      data: DATA.income2026.map(x => x.total),
-      backgroundColor: ['#22d3ee','#8b5cf6','#fbbf24','#10b981','#ef4444','#f97316'],
-      borderColor:'#0b1220', borderWidth:2
-    }]
-  },
-  options:{
-    responsive:true, maintainAspectRatio:false,
-    plugins:{ legend:{ position:'right' }, tooltip:{ callbacks:{ label: c => c.label + ': ' + fmtUSD(c.parsed) } } }
-  }
-});
-
-// Expense bar (horizontal)
-new Chart(document.getElementById('expenseBar'), {
-  type:'bar',
-  data:{
-    labels: DATA.expense2026.filter(x => x.total>0).map(x => x.account),
-    datasets:[{
-      label:'Gastos YTD',
-      data: DATA.expense2026.filter(x => x.total>0).map(x => x.total),
-      backgroundColor:'#ef4444', borderRadius:4
-    }]
-  },
-  options:{
-    indexAxis:'y',
-    responsive:true, maintainAspectRatio:false,
-    plugins:{ legend:{ display:false }, tooltip:{ callbacks:{ label: c => fmtUSD(c.parsed.x) } } },
-    scales:{ x:{ ticks:{ callback: v => '$' + (v/1000).toFixed(1) + 'k' } } }
-  }
-});
+  const tbody = document.getElementById('monthlyTbody');
+  months.forEach(m=>{
+    const margin = m.income !== 0 ? (m.net / m.income) : 0;
+    const share = (m.income/totalIncome)*100;
+    const tr = document.createElement('tr');
+    tr.innerHTML =
+      '<td>'+m.label;
+    tr.innerHTML += '</td><td class="num">'+fmt(m.income)+'</td><td class="num">'+fmt(m.expense)+'</td><td class="num '+(m.net>=0?'good':'bad')+'">'+fmt(m.net)+'</td><td class="num">'+(m.income!==0? (margin*100).toFixed(2)+'%':'—')+'</td><td class="num">'+share.toFixed(1)+'%</td>';
+    tbody.appendChild(tr);
+  });
 </script>
 </body>
 </html>
